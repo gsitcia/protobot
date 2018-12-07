@@ -2,6 +2,9 @@ var sleep = function(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
 
+var minWait = (new URL(location.href)).searchParams.get('min');
+var maxWait = (new URL(location.href)).searchParams.get('max');
+
 if (!Object.prototype.watch) {
   Object.defineProperty(Object.prototype, "watch", {
     enumerable: false,
@@ -84,30 +87,25 @@ var typeAnswer = async function(a) {
       /* typo time */
       await sleep(100+Math.random()*100);
       z += al[Math.floor(Math.random()*26)];
-      $('.guess_input')[0].value = z;
       mo.guess({text:z,done:false});
       for (var j = 1; j <= bb; j++) {
         await sleep(100+Math.random()*100);
         z += a[i+j];
-        $('.guess_input')[0].value = z;
         mo.guess({text:z,done:false});
       }
       for (var j = 0; j <= bb; j++) {
         await sleep(50);
         z = z.slice(0,z.length-1);
-        $('.guess_input')[0].value = z;
         mo.guess({text:z,done:false});
       }
     }
     if (Math.random() > 0.004) {
       await sleep(100+Math.random()*100);
       z += a[i];
-      $('.guess_input')[0].value = z;
       mo.guess({text:z,done:false});
     } else if (Math.random() > 0.5) {
       await sleep(100+Math.random()*100);
       z += al[Math.floor(Math.random()*26)];
-      $('.guess_input')[0].value = z;
       mo.guess({text:z,done:false});
     }
   }
@@ -128,7 +126,7 @@ var cheat = async function() {
 };
 
 var wc = async function() {
-  await sleep(Math.random()*1000+3000);
+  await sleep(Math.random()*(maxWait-minWait)+minWait);
   cheat();
 };
 
@@ -140,19 +138,7 @@ vo.watch('answer',function(a,b,c) {
 
 var wn = async function() {
   await sleep(500+Math.random()*200);
-  if ($('.revealed.active').length) {
-    console.log('next');
-    mo.next();
-  }
+  mo.next();
 };
 
 Et = adc(Et,wn);
-
-var sendkey = function(c,e) {
-  if (typeof(e) == 'string') {
-    e = $(e)[0];
-  }
-  e.dispatchEvent(new KeyboardEvent('keydown',{keyCode:c}));
-  e.dispatchEvent(new KeyboardEvent('keypress',{keyCode:c}));
-  e.dispatchEvent(new KeyboardEvent('keyup',{keyCode:c}));
-};
